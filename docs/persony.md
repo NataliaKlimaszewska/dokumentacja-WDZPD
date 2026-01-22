@@ -9,11 +9,11 @@
 
 ---
 
-[Lucyna](SzablonPersonyU%C5%BCytkownikaLucyna.md ':include')
+[Lucyna](SzablonPersonyUżytkownikaLucyna.md ':include')
 
 ---
 
-[Mateusz](SzablonPersonyU%C5%BCytkownikaMateusz.md ':include')
+[Mateusz](SzablonPersonyUżytkownikaMateusz.md ':include')
 
 ---
 
