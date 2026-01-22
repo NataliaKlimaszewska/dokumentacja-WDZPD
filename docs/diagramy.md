@@ -1,44 +1,29 @@
 # Zestawienie Diagramów
 
 ## Diagram Administratora
-![ADMIN](images/diagramy/Diagram_ADMIN.png)
+![ADMIN](images/diagramy/Diagram%20ADMIN.png)
 
 ---
 
 ## Diagram Akwarium
-![AWKARIUM](images/diagramy/Diagram_AKWARIUM.png)
-
----
-
-## Diagram Kontakt
-![KONTAKT](images/diagramy/Diagram_CONTACT.png)
+![AWKARIUM](images/diagramy/Diagram%20AKWARIUM.png)
 
 ---
 
 ## Diagram Klas
-![KLASY](images/diagramy/Diagram_KLAS.png)
-
----
-
-## Diagram Komponentów
-![KOMPONENT](images/diagramy/Diagram_KOMPONENT.png)
+![KLASY](images/diagramy/Diagram%20KLAS.png)
 
 ---
 
 ## Diagram Główny (Main)
-![MAIN](images/diagramy/Diagram_MAIN.png)
+![MAIN](images/diagramy/Diagram%20MAIN.png)
 
 ---
 
 ## Diagram Rośliny
-![ROSLINY](images/diagramy/Diagram_ROSLINY.png)
-
----
-
-## Diagram Ryby
-![RYBY](images/diagramy/Diagram_RYBY.png)
+![ROSLINY](images/diagramy/Diagram%20ROSLINY.png)
 
 ---
 
 ## Diagram Sekwencji (Całość)
-![CALOSC](images/diagramy/Diagram_SEKWENCJI_CALY_PROGRAM.jpg)
+![CALOSC](images/diagramy/DIAGRAM%20POP.png)
