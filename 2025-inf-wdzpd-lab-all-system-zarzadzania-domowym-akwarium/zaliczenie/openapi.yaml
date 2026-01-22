@@ -1,0 +1,1916 @@
+openapi: 3.0.0
+info:
+  title: AquaTracker API v1
+  description: |
+    AquaTracker REST API. All request/response bodies are application/json. Base URL: http://localhost:3001/api/v1/
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001/api/v1
+    description: Local dev
+tags:
+  - name: Users
+  - name: Fish
+  - name: Plants
+  - name: Aquariums
+  - name: Logs
+  - name: Contacts
+
+components:
+  schemas:
+    LogCreateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - actionType
+      properties:
+        actionType:
+          $ref: "#/components/schemas/LogActionType"
+        aquariumId:
+          $ref: "#/components/schemas/Id"
+        message:
+          type: string
+          description: Optional human-readable note/description
+          maxLength: 2000
+        metadata:
+          type: object
+          description: Optional structured data for the log entry
+          additionalProperties: true
+
+    UserId:
+      type: string
+      format: uuid
+      description: UUIDv4 identifier
+      example: "00000000-0000-4000-8000-000000000000"
+
+    NullableUserId:
+      type: string
+      format: uuid
+      nullable: true
+      description: Nullable UUIDv4 identifier
+      example: null
+
+    Id:
+      type: integer
+      format: int64
+      example: 123
+
+    NullableId:
+      type: integer
+      format: int64
+      nullable: true
+      example: null
+
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        error:
+          type: string
+          example: ValidationError
+        message:
+          type: string
+          example: temperatureC must be between 15 and 35
+        field:
+          type: string
+          nullable: true
+          example: temperatureC
+        details:
+          type: object
+          nullable: true
+          additionalProperties: true
+          example:
+            fishId: 1
+            conflictingFishIds:
+              - 2
+      required:
+        - error
+        - message
+
+    Language:
+      type: string
+      enum:
+        - pl
+        - en
+
+    Theme:
+      type: string
+      enum:
+        - light
+        - dark
+
+    WaterType:
+      type: string
+      enum:
+        - Słodkowodna
+        - Słonawowodna
+        - Słonowodna
+    User:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: "#/components/schemas/UserId"
+        username:
+          type: string
+          example: aquarist123
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        language:
+          $ref: "#/components/schemas/Language"
+        theme:
+          $ref: "#/components/schemas/Theme"
+      required:
+        - id
+        - username
+        - email
+        - language
+        - theme
+
+    UserCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        username:
+          type: string
+          example: aquarist123
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          example: StrongPassword123!
+        language:
+          $ref: "#/components/schemas/Language"
+        theme:
+          $ref: "#/components/schemas/Theme"
+      required:
+        - username
+        - email
+        - password
+        - language
+        - theme
+
+    UserUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        language:
+          $ref: "#/components/schemas/Language"
+        theme:
+          $ref: "#/components/schemas/Theme"
+
+    Fish:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        name:
+          type: string
+          example: Neon Innesa
+        waterType:
+          $ref: "#/components/schemas/WaterType"
+        temperature:
+          type: string
+          description: "Temperature range string, e.g. \"22-26\""
+          example: 22-26
+        biotope:
+          type: string
+          example: Ameryka Południowa
+        ph:
+          type: string
+          example: 6.5-7.5
+        hardnessDGH:
+          type: string
+          example: 1-12
+        temperament:
+          type: string
+          example: spokojne
+        minShoalSize:
+          type: integer
+          minimum: 1
+          example: 10
+        lifeSpan:
+          type: string
+          example: 3-5 lat
+        iconName:
+          type: string
+          example: neon_innesa.png
+      required:
+        - id
+        - name
+        - waterType
+        - temperature
+        - biotope
+        - ph
+        - hardnessDGH
+        - temperament
+        - minShoalSize
+        - lifeSpan
+        - iconName
+
+    FishCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        waterType:
+          $ref: "#/components/schemas/WaterType"
+        temperature:
+          type: string
+        biotope:
+          type: string
+        ph:
+          type: string
+        hardnessDGH:
+          type: string
+        temperament:
+          type: string
+        minShoalSize:
+          type: integer
+          minimum: 1
+        lifeSpan:
+          type: string
+        iconName:
+          type: string
+      required:
+        - name
+        - waterType
+        - temperature
+        - biotope
+        - ph
+        - hardnessDGH
+        - temperament
+        - minShoalSize
+        - lifeSpan
+        - iconName
+
+    FishUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        waterType:
+          $ref: "#/components/schemas/WaterType"
+        temperature:
+          type: string
+        biotope:
+          type: string
+        ph:
+          type: string
+        hardnessDGH:
+          type: string
+        temperament:
+          type: string
+        minShoalSize:
+          type: integer
+          minimum: 1
+        lifeSpan:
+          type: string
+        iconName:
+          type: string
+
+    Plant:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        name:
+          type: string
+          example: Moczarka
+        temperature:
+          type: string
+          example: 12-20
+        biotope:
+          type: string
+          example: Ameryka Północna
+        ph:
+          type: string
+          example: 6.0-8.0
+        hardnessDGH:
+          type: string
+          example: 5-20
+        iconName:
+          type: string
+          example: moczarka.png
+      required:
+        - id
+        - name
+        - temperature
+        - biotope
+        - ph
+        - hardnessDGH
+        - iconName
+
+    PlantCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        temperature:
+          type: string
+        biotope:
+          type: string
+        ph:
+          type: string
+        hardnessDGH:
+          type: string
+        iconName:
+          type: string
+      required:
+        - name
+        - temperature
+        - biotope
+        - ph
+        - hardnessDGH
+        - iconName
+
+    PlantUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        temperature:
+          type: string
+        biotope:
+          type: string
+        ph:
+          type: string
+        hardnessDGH:
+          type: string
+        iconName:
+          type: string
+
+    AquariumFishItem:
+      type: object
+      additionalProperties: false
+      properties:
+        fishId:
+          $ref: "#/components/schemas/Id"
+        count:
+          type: integer
+          minimum: 0
+          example: 6
+      required:
+        - fishId
+        - count
+
+    AquariumPlantItem:
+      type: object
+      additionalProperties: false
+      properties:
+        plantId:
+          $ref: "#/components/schemas/Id"
+        count:
+          type: integer
+          minimum: 0
+          example: 2
+      required:
+        - plantId
+        - count
+
+    StatusIssue:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          example: TEMPERATURE_OUT_OF_RANGE
+        message:
+          type: string
+          example: Temperatura 30°C poza zakresem dla Neon Innesa (22-26).
+      required:
+        - type
+        - message
+
+    AquariumStatus:
+      type: object
+      additionalProperties: false
+      properties:
+        level:
+          type: string
+          enum:
+            - OK
+            - WARNING
+            - ERROR
+          example: WARNING
+        issues:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusIssue"
+        lastCheckedAt:
+          type: string
+          format: date-time
+          example: 2025-01-25T11:00:00Z
+      required:
+        - level
+        - issues
+        - lastCheckedAt
+
+    Aquarium:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        ownerId:
+          $ref: "#/components/schemas/UserId"
+        name:
+          type: string
+          example: Moje pierwsze akwarium
+        description:
+          type: string
+          nullable: true
+          example: Pierwsze domowe akwarium
+        volumeLiters:
+          type: integer
+          minimum: 1
+          example: 120
+        waterType:
+          $ref: "#/components/schemas/WaterType"
+        temperatureC:
+          type: number
+          example: 26
+        ph:
+          type: number
+          example: 7.2
+        hardnessDGH:
+          type: number
+          example: 10
+        fish:
+          type: array
+          items:
+            $ref: "#/components/schemas/AquariumFishItem"
+        plants:
+          type: array
+          items:
+            $ref: "#/components/schemas/AquariumPlantItem"
+        status:
+          $ref: "#/components/schemas/AquariumStatus"
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-01-20T09:00:00Z
+      required:
+        - id
+        - ownerId
+        - name
+        - volumeLiters
+        - waterType
+        - temperatureC
+        - ph
+        - hardnessDGH
+        - fish
+        - plants
+        - status
+        - createdAt
+
+    AquariumCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        volumeLiters:
+          type: integer
+          minimum: 1
+        waterType:
+          $ref: "#/components/schemas/WaterType"
+        temperatureC:
+          type: number
+        ph:
+          type: number
+        hardnessDGH:
+          type: number
+        fish:
+          type: array
+          items:
+            $ref: "#/components/schemas/AquariumFishItem"
+        plants:
+          type: array
+          items:
+            $ref: "#/components/schemas/AquariumPlantItem"
+      required:
+        - name
+        - volumeLiters
+        - waterType
+        - temperatureC
+        - ph
+        - hardnessDGH
+        - fish
+        - plants
+
+    AquariumUpdateRequest:
+      $ref: "#/components/schemas/AquariumCreateRequest"
+
+    AquariumParametersUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        temperatureC:
+          type: number
+        ph:
+          type: number
+        hardnessDGH:
+          type: number
+
+    AddFishToAquariumRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        fishId:
+          $ref: "#/components/schemas/Id"
+        count:
+          type: integer
+          minimum: 1
+      required:
+        - fishId
+        - count
+
+    UpdateFishCountRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        count:
+          type: integer
+          minimum: 0
+      required:
+        - count
+
+    AddPlantToAquariumRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        plantId:
+          $ref: "#/components/schemas/Id"
+        count:
+          type: integer
+          minimum: 1
+      required:
+        - plantId
+        - count
+
+    UpdatePlantCountRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        count:
+          type: integer
+          minimum: 0
+      required:
+        - count
+
+    LogActionType:
+      type: string
+      enum:
+        - AQUARIUM_CREATED
+        - AQUARIUM_UPDATED
+        - FISH_ADDED
+        - FISH_UPDATED
+        - FISH_REMOVED
+        - PLANT_ADDED
+        - PLANT_UPDATED
+        - PLANT_REMOVED
+        - PARAM_CHANGED
+
+    LogEntry:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        userId:
+          $ref: "#/components/schemas/UserId"
+        aquariumId:
+          $ref: "#/components/schemas/Id"
+        aquariumName:
+          type: string
+          example: Moje pierwsze akwarium
+        actionType:
+          $ref: "#/components/schemas/LogActionType"
+        title:
+          type: string
+          example: Zmieniono parametr
+        message:
+          type: string
+          example: "Zmieniono twardość wody: 10 dGH → 12 dGH"
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-01-23T14:30:00Z
+        metadata:
+          type: object
+          additionalProperties: true
+          example:
+            parameter: hardnessDGH
+            oldValue: 10
+            newValue: 12
+      required:
+        - id
+        - userId
+        - aquariumId
+        - aquariumName
+        - actionType
+        - title
+        - message
+        - createdAt
+        - metadata
+
+    AquariumAndLogResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        aquarium:
+          $ref: "#/components/schemas/Aquarium"
+        logEntry:
+          $ref: "#/components/schemas/LogEntry"
+      required:
+        - aquarium
+        - logEntry
+
+    InvitationStatus:
+      type: string
+      enum:
+        - PENDING
+        - ACCEPTED
+        - REJECTED
+
+    ContactStatus:
+      type: string
+      enum:
+        - PENDING
+        - ACCEPTED
+
+    Contact:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        userId:
+          $ref: "#/components/schemas/UserId"
+        friendId:
+          $ref: "#/components/schemas/UserId"
+        friendName:
+          type: string
+          example: Jan Kowalski
+        friendEmail:
+          type: string
+          format: email
+          example: jan.kowalski@example.com
+        status:
+          $ref: "#/components/schemas/ContactStatus"
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-01-20T10:00:00Z
+      required:
+        - id
+        - userId
+        - friendId
+        - friendName
+        - friendEmail
+        - status
+        - createdAt
+
+    Invitation:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        senderId:
+          $ref: "#/components/schemas/UserId"
+        recipientEmail:
+          type: string
+          format: email
+          example: anna.nowak@example.com
+        recipientUserId:
+          $ref: "#/components/schemas/NullableUserId"
+        status:
+          $ref: "#/components/schemas/InvitationStatus"
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-01-21T09:00:00Z
+        respondedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+      required:
+        - id
+        - senderId
+        - recipientEmail
+        - status
+        - createdAt
+        - respondedAt
+
+    ContactsOverview:
+      type: object
+      additionalProperties: false
+      properties:
+        friends:
+          type: array
+          items:
+            $ref: "#/components/schemas/Contact"
+        invitations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Invitation"
+      required:
+        - friends
+        - invitations
+
+    SendInvitationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          format: email
+          example: anna.nowak@example.com
+      required:
+        - email
+
+    SendInvitationResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        invitation:
+          $ref: "#/components/schemas/Invitation"
+      required:
+        - invitation
+
+    AcceptInvitationResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        invitation:
+          $ref: "#/components/schemas/Invitation"
+        contact:
+          $ref: "#/components/schemas/Contact"
+      required:
+        - invitation
+        - contact
+
+    StatsGlobal:
+      type: object
+      additionalProperties: false
+      properties:
+        totalAquariums:
+          type: integer
+          example: 2
+        totalFishCount:
+          type: integer
+          example: 2
+        totalPlantCount:
+          type: integer
+          example: 3
+        fishSpeciesCount:
+          type: integer
+          example: 1
+        plantSpeciesCount:
+          type: integer
+          example: 2
+        fishDistribution:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatsDistributionItem"
+        plantDistribution:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatsDistributionItem"
+        mostCommonFish:
+          $ref: "#/components/schemas/StatsMostCommon"
+        mostCommonPlant:
+          $ref: "#/components/schemas/StatsMostCommon"
+      required:
+        - totalAquariums
+        - totalFishCount
+        - totalPlantCount
+        - fishSpeciesCount
+        - plantSpeciesCount
+        - fishDistribution
+        - plantDistribution
+        - mostCommonFish
+        - mostCommonPlant
+
+    StatsSingleAquarium:
+      type: object
+      additionalProperties: false
+      properties:
+        aquariumId:
+          $ref: "#/components/schemas/Id"
+        fishCount:
+          type: integer
+          example: 1
+        plantCount:
+          type: integer
+          example: 2
+        fishSpeciesCount:
+          type: integer
+          example: 1
+        plantSpeciesCount:
+          type: integer
+          example: 2
+        fishDistribution:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatsDistributionItem"
+        plantDistribution:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatsDistributionItem"
+        mostCommonFish:
+          $ref: "#/components/schemas/StatsMostCommon"
+        mostCommonPlant:
+          $ref: "#/components/schemas/StatsMostCommon"
+      required:
+        - aquariumId
+        - fishCount
+        - plantCount
+        - fishSpeciesCount
+        - plantSpeciesCount
+        - fishDistribution
+        - plantDistribution
+        - mostCommonFish
+        - mostCommonPlant
+
+    StatsDistributionItem:
+      type: object
+      additionalProperties: false
+      properties:
+        fishId:
+          $ref: "#/components/schemas/NullableId"
+        plantId:
+          $ref: "#/components/schemas/NullableId"
+        name:
+          type: string
+          example: Neon Innesa
+        count:
+          type: integer
+          example: 1
+        percentage:
+          type: number
+          example: 100.0
+      required:
+        - name
+        - count
+        - percentage
+
+    StatsMostCommon:
+      type: object
+      additionalProperties: false
+      properties:
+        fishId:
+          $ref: "#/components/schemas/NullableId"
+        plantId:
+          $ref: "#/components/schemas/NullableId"
+        name:
+          type: string
+          example: Neon Innesa
+        count:
+          type: integer
+          example: 1
+        percentage:
+          type: number
+          example: 100.0
+      required:
+        - name
+        - count
+        - percentage
+
+paths:
+  /users:
+    get:
+      summary: List users
+      tags:
+        - Users
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        "200":
+          description: Users list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateRequest"
+            example:
+              email: user@example.com
+              username: aquarist123
+              password: StrongPassword123!
+              language: pl
+              theme: dark
+      responses:
+        "201":
+          description: Created user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              example:
+                id: "00000000-0000-4000-8000-000000000000"
+                email: user@example.com
+                username: aquarist123
+                language: pl
+                theme: dark
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict (email or username already exists)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Conflict
+                message: Email already in use
+                field: email
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /users/{userId}:
+    get:
+      summary: Fetch user
+      tags:
+        - Users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        "200":
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              example:
+                id: "00000000-0000-4000-8000-000000000000"
+                email: user@example.com
+                username: aquarist123
+                language: pl
+                theme: dark
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      summary: Update user
+      tags:
+        - Users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateRequest"
+            example:
+              language: en
+              theme: light
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete (reset) user
+      description: deletes the user info from the database. (the user remains in Cognito)
+      tags:
+        - Users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /fish:
+    get:
+      summary: List fish
+      tags:
+        - Fish
+      responses:
+        "200":
+          description: Fish list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Fish"
+    post:
+      summary: Add fish
+      description: Creates a fish entry (admin/internal).
+      tags:
+        - Fish
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FishCreateRequest"
+      responses:
+        "201":
+          description: Created fish
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fish"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /fish/{fishId}:
+    delete:
+      summary: Delete fish
+      tags:
+        - Fish
+      parameters:
+        - name: fishId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /plants:
+    get:
+      summary: List plants
+      tags:
+        - Plants
+      responses:
+        "200":
+          description: Plants list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Plant"
+    post:
+      summary: Add plant
+      description: Creates a plant entry (admin/internal).
+      tags:
+        - Plants
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlantCreateRequest"
+      responses:
+        "201":
+          description: Created plant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plant"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /plants/{plantId}:
+    delete:
+      summary: Delete plant
+      tags:
+        - Plants
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /aquariums/{userId}:
+    get:
+      summary: List my aquariums
+      tags:
+        - Aquariums
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        "200":
+          description: Aquariums list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Aquarium"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create aquarium
+      tags:
+        - Aquariums
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AquariumCreateRequest"
+      responses:
+        "201":
+          description: Created aquarium
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Aquarium"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /aquariums/{aquariumId}:
+    get:
+      summary: Get aquarium by id
+      tags:
+        - Aquariums
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+          example: 901
+      responses:
+        "200":
+          description: Aquarium
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Aquarium"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update aquarium
+      tags:
+        - Aquariums
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AquariumUpdateRequest"
+      responses:
+        "200":
+          description: Updated aquarium
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Aquarium"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete aquarium
+      tags:
+        - Aquariums
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /aquariums/{aquariumId}/fish:
+    post:
+      summary: Add fish to aquarium
+      tags:
+        - Aquariums
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddFishToAquariumRequest"
+            example:
+              fishId: 1
+              count: 5
+      responses:
+        "200":
+          description: Aquarium + log entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AquariumAndLogResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found (aquarium or fish)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Compatibility/validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /aquariums/{aquariumId}/fish/{fishId}:
+    delete:
+      summary: Remove fish from aquarium
+      description: "Optionally pass `count` to remove a specific amount; if omitted, removes the entry."
+      tags:
+        - Aquariums
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+        - name: fishId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+        - name: count
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+          description: "If present, decreases fish count by this value."
+      responses:
+        "200":
+          description: Aquarium + log entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AquariumAndLogResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found (aquarium or fish)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /aquariums/{aquariumId}/plants:
+    post:
+      summary: Add plant to aquarium
+      tags:
+        - Aquariums
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddPlantToAquariumRequest"
+            example:
+              plantId: 1
+              count: 3
+      responses:
+        "200":
+          description: Aquarium + log entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AquariumAndLogResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found (aquarium or plant)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /aquariums/{aquariumId}/plants/{plantId}:
+    delete:
+      summary: Remove plant from aquarium
+      description: "Optionally pass `count` to remove a specific amount; if omitted, removes the entry."
+      tags:
+        - Aquariums
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+        - name: plantId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+        - name: count
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Aquarium + log entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AquariumAndLogResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found (aquarium or plant)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /aquariums/{aquariumId}/status:
+    post:
+      summary: Recalculate aquarium status
+      tags:
+        - Aquariums
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "200":
+          description: Status only
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  status:
+                    $ref: "#/components/schemas/AquariumStatus"
+                required:
+                  - status
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /aquariums/{aquariumId}/stats:
+    get:
+      summary: Stats for a single aquarium
+      tags:
+        - Aquariums
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsSingleAquarium"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /logs/{userId}:
+    get:
+      summary: List logs for current user
+      tags:
+        - Logs
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+        - name: actionType
+          in: query
+          schema:
+            $ref: "#/components/schemas/LogActionType"
+        - name: aquariumId
+          in: query
+          schema:
+            $ref: "#/components/schemas/Id"
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Logs list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LogEntry"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Add a log entry for current user
+      tags:
+        - Logs
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogCreateRequest"
+      responses:
+        "201":
+          description: Log created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogEntry"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /contacts/{userId}:
+    get:
+      summary: List contacts for current user
+      tags:
+        - Contacts
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+          example: "00000000-0000-4000-8000-000000000000"
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /contacts/{userId}/{contactId}:
+    post:
+      summary: Send invitation by email
+      tags:
+        - Contacts
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendInvitationRequest"
+      responses:
+        "201":
+          description: Invitation created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SendInvitationResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: UserNotFound
+                message: Użytkownik o podanym adresie e-mail nie istnieje.
+    delete:
+      summary: Remove friend or cancel invitation
+      tags:
+        - Contacts
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+        - name: contactId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+          example: 1
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /contacts/{userId}/{contactId}/accept:
+    post:
+      summary: Accept invitation
+      tags:
+        - Contacts
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+        - name: invitationId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+          example: 1
+      responses:
+        "200":
+          description: Accepted invitation + created contact
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcceptInvitationResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /contacts/{userId}/{contactId}/reject:
+    post:
+      summary: Reject invitation
+      tags:
+        - Contacts
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+        - name: invitationId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "200":
+          description: Rejected invitation
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  invitation:
+                    $ref: "#/components/schemas/Invitation"
+                required:
+                  - invitation
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
