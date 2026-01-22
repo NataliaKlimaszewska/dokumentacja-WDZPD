@@ -8,11 +8,20 @@
 ## Diagram Akwarium
 ![AWKARIUM](images/diagramy/Diagram_AKWARIUM.png)
 
+---
+
+## Diagram Kontakt
+![KONTAKT](images/diagramy/Diagram_CONTACT.png)
 
 ---
 
 ## Diagram Klas
 ![KLASY](images/diagramy/Diagram_KLAS.png)
+
+---
+
+## Diagram Komponentów
+![KOMPONENT](images/diagramy/Diagram_KOMPONENT.png)
 
 ---
 
@@ -32,4 +41,4 @@
 ---
 
 ## Diagram Sekwencji (Całość)
-![CALOSC](images/diagramy/DIAGRAM_POP.png)
+![CALOSC](images/diagramy/Diagram_SEKWENCJI_CALY_PROGRAM.jpg)
