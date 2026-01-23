@@ -6,4 +6,5 @@
 * [Event Storming](EventStormingCalosc.md) 
 * [Sprinty](sprinty.md)
 * [Retrospektywy](retrospektywy.md)
+* [Backlog](Backlog.md)
 * [Diagramy](diagramy.md)
